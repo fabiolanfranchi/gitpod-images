@@ -3,14 +3,15 @@
 set -e
 
 DOCKER_CONFIG="$HOME/.docker/config.json"
-AWS_ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
+ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
+REGION="$(aws configure get region)"
 
 if [[ ! -e "$DOCKER_CONFIG" ]]; then
     mkdir -m 0700 -p "$(dirname $DOCKER_CONFIG)"
     echo '{}' >$DOCKER_CONFIG
 fi
 
-jq --arg registry "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com" \
+jq --arg registry "$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com" \
     '. * {credHelpers:{"public.ecr.aws":"ecr-login",($registry):"ecr-login"}}' \
     $DOCKER_CONFIG >$DOCKER_CONFIG.tmp
 

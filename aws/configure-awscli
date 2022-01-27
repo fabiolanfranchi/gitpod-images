@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+ROLE_ARN="$1"
+REGION="${2:-us-east-1}"
+
+ID_TOKEN_FILE="$HOME/.aws/web_identity_token"
+SESSION_NAME="$(jq -Rr 'split(".") | .[1] | @base64d | fromjson | .sub' <<<"$ID_TOKEN")"
+
+aws configure set region "$REGION"
+aws configure set role_arn "$ROLE_ARN"
+aws configure set web_identity_token_file "$ID_TOKEN_FILE"
+aws configure set role_session_name "$SESSION_NAME"
+
+echo -n "$ID_TOKEN" >"$ID_TOKEN_FILE"
