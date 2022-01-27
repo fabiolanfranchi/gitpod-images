@@ -12,6 +12,7 @@ RUN curl -s https://api.github.com/repos/awslabs/amazon-ecr-credential-helper/re
     && sudo install -o root -g root -m 0755 docker-credential-ecr-login /usr/local/bin/docker-credential-ecr-login \
     && rm docker-credential-ecr-login
 
+COPY update-kubeconfig /usr/local/bin/
 RUN curl -sLO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
     && sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
     && rm kubectl
